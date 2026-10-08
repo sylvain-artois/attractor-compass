@@ -58,3 +58,55 @@ jobs:
         run: pip install -e ".[dev,baselines]"
       - name: Run tests
         run: pytest -v
+
+  models:
+    # The model-dependent layer: downloads the spaCy FR pipeline and the two HF
+    # checkpoints, then runs the functional, golden and benchmark tests that the
+    # offline `test` job skips. x86 and arm64 side by side, so the golden's
+    # float tolerance is set against the drift actually seen across machines.
+    name: Model tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Cache Hugging Face checkpoints
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-${{ runner.os }}-${{ runner.arch }}-camembert-large-distilcamembert-nli
+      - name: Install CPU-only PyTorch
+        run: pip install torch --index-url https://download.pytorch.org/whl/cpu
+      - name: Install package (dev + baselines extras)
+        run: pip install -e ".[dev,baselines]"
+      - name: Download the spaCy FR pipeline
+        run: python -m spacy download fr_core_news_lg
+      - name: Golden drift report
+        # Prints obtained vs golden per pole to the run summary, before the
+        # assertion runs, so a failing tolerance still shows how far off it is.
+        run: |
+          python - <<'PY' | tee -a "$GITHUB_STEP_SUMMARY"
+          import json, platform, sys
+          import numpy, torch, transformers
+          sys.path.insert(0, "tests")
+          from test_score import GOLDEN, PROBE
+          from attractor_compass import score
+
+          got = score(PROBE)["scores"]
+          exp = json.loads(GOLDEN.read_text(encoding="utf-8"))
+          print(f"### Golden drift — {platform.machine()}, Python {platform.python_version()}")
+          print(f"torch {torch.__version__} · transformers {transformers.__version__} · numpy {numpy.__version__}\n")
+          print("| pole | golden | obtained | abs diff |")
+          print("|---|---|---|---|")
+          for pole, e in exp.items():
+              print(f"| {pole} | {e:.12f} | {got[pole]:.12f} | {abs(got[pole] - e):.3e} |")
+          print(f"\n**max abs diff: {max(abs(got[p] - e) for p, e in exp.items()):.3e}**")
+          PY
+      - name: Run model tests
+        run: pytest -v -rs tests/test_score.py tests/test_baselines.py
