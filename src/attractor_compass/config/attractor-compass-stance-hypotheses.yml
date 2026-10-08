@@ -1,6 +1,6 @@
-# Latouromètre stance hypotheses — zero-shot NLI candidate labels per pole.
+# Attractor Compass stance hypotheses — zero-shot NLI candidate labels per pole.
 #
-# The cosine-only Latouromètre cannot tell apart "this text endorses
+# The cosine-only Attractor Compass cannot tell apart "this text endorses
 # pole P" from "this text uses P's lexicon to attack P". A zero-shot
 # NLI head (cmarkea/distilcamembert-base-nli, FR-only) scores
 # each chunk against pro / contra hypotheses below; the per-pole
@@ -18,7 +18,7 @@
 # Each contra hypothesis should fire on multiple distinct authors that
 # share the inversion family, not on a single text.
 #
-# Same key-order convention as latourometre-seeds.yml: terrestre →
+# Same key-order convention as attractor-compass-seeds.yml: terrestre →
 # global → hors_sol → local maps to the cardinal angles of the polar
 # chart (top, right, bottom, left).
 #

@@ -3,7 +3,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "latourometer"
+name = "attractor-compass"
 version = "0.1.0"
 description = "Score a French political text on Bruno Latour's two attractor axes (Local↔Global, Hors-Sol↔Terrestre) — cosine SemAxis projection + zero-shot NLI stance blend."
 readme = "README.md"
@@ -47,11 +47,11 @@ baselines = [
 dev = ["pytest>=8", "ruff>=0.15"]
 
 [project.scripts]
-latourometer = "latourometer.cli:main"
+attractor-compass = "attractor_compass.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/sylvain-artois/latourometer"
-Dataset = "https://huggingface.co/datasets/DyePop/latourometer-corpus"
+Homepage = "https://github.com/sylvain-artois/attractor-compass"
+Dataset = "https://huggingface.co/datasets/afk-live/attractor-compass-corpus"
 
 [tool.ruff]
 line-length = 88
@@ -67,4 +67,4 @@ ignore = ["E501"]
 where = ["src"]
 
 [tool.setuptools.package-data]
-latourometer = ["config/*.yml"]
+attractor_compass = ["config/*.yml"]

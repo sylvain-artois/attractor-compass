@@ -1,4 +1,4 @@
-"""Score texts with the Wordscores lexicon and compare against the Latouromètre.
+"""Score texts with the Wordscores lexicon and compare against the Attractor Compass.
 
 Consumes the lexicon written by ``calibrate`` and scores whole texts on the 1-D
 Hors-Sol <-> Terrestre axis:
@@ -14,8 +14,8 @@ It scores four buckets and writes a CSV + a short markdown report:
                       pole's lexicon *against* it. Wordscores is expected to
                       misclassify them: this is the scientific payload (lexical
                       scaling is necessary but not sufficient; NLI stance is the
-                      missing layer). The cosine+NLI Latouromètre recovers them.
-  * **hold-out**   -- the unseen ``corpus_latourometre/tests/`` set (diagnostic;
+                      missing layer). The cosine+NLI Attractor Compass recovers them.
+  * **hold-out**   -- the unseen ``corpus_attractor_compass/tests/`` set (diagnostic;
                       gold often absent).
   * **oracle**     -- Latour's own *Où atterrir?*, if a local copy is pointed at
                       via ``--oracle-path``. A positive control: the lexicon
@@ -27,7 +27,7 @@ contrasts against are read from run artifacts, not computed live.
 
 Usage:
 
-    python -m latourometer.baselines.compare --axis hors-sol-terrestre [--dry-run] \\
+    python -m attractor_compass.baselines.compare --axis hors-sol-terrestre [--dry-run] \\
         [--lexicon <path>] [--tests-dir <path>] [--oracle-path <path>]
 """
 
@@ -68,13 +68,12 @@ from .calibrate import (
     output_dir,
 )
 
-logger = logging.getLogger("latourometer.baselines.compare")
+logger = logging.getLogger("attractor_compass.baselines.compare")
 
 # The four inversion-stance texts and the pole each author actually argues for,
 # projected onto the Hors-Sol <-> Terrestre axis. Read from the frontmatter
 # ``attracteur`` where on-axis; Brunel's gold is ``local`` (off this 1-D axis),
 # so its prediction is reported but excluded from HS-vs-T accuracy.
-# (Documented in latourometre-corpus-note.md §"L'inversion de stance".)
 
 # Default oracle location, relative to CORPUS_BASE_PATH.
 _ORACLE_DIRNAME = "BrunoLatour_OuAttérir"
@@ -101,7 +100,7 @@ _TEXT_BOOTSTRAP_PCT = (2.5, 97.5)
 _LOWE_ALPHA = 0.5
 
 # Reference doc for the full-metric figures cited in the report.
-_PROD_DOC = "the Latouromètre calibration write-up"
+_PROD_DOC = "the Attractor Compass calibration write-up"
 
 
 @dataclass
@@ -272,10 +271,10 @@ def accuracy(rows: List[ScoredText], category: str = "seed") -> Tuple[int, int]:
     return correct, len(graded)
 
 
-def load_latourometre_preds(latour_dir: Path) -> Dict[str, str]:
-    """Read the Latouromètre per-text predictions from a batch-run dir.
+def load_attractor_compass_preds(latour_dir: Path) -> Dict[str, str]:
+    """Read the Attractor Compass per-text predictions from a batch-run dir.
 
-    Reads ``<slug>.latourometre.json`` files and returns ``{slug:
+    Reads ``<slug>.attractor_compass.json`` files and returns ``{slug:
     predicted_pole}`` over the four poles. Only the *prediction* is consumed; the
     gold comes from the live corpus frontmatter, never from these (possibly
     stale) JSON headers.
@@ -283,14 +282,14 @@ def load_latourometre_preds(latour_dir: Path) -> Dict[str, str]:
     preds: Dict[str, str] = {}
     if not latour_dir.is_dir():
         logger.warning(
-            "latourometre dir not found, skipping head-to-head: %s", latour_dir
+            "attractor_compass dir not found, skipping head-to-head: %s", latour_dir
         )
         return preds
-    for p in sorted(latour_dir.glob("*.latourometre.json")):
+    for p in sorted(latour_dir.glob("*.attractor_compass.json")):
         if p.name.startswith("._"):
             continue
         d = json.loads(p.read_text(encoding="utf-8"))
-        slug = d.get("slug") or p.name.replace(".latourometre.json", "")
+        slug = d.get("slug") or p.name.replace(".attractor_compass.json", "")
         if d.get("predicted_pole"):
             preds[slug] = d["predicted_pole"]
     return preds
@@ -301,10 +300,10 @@ def headtohead(
     latour: Dict[str, str],
     poles: Tuple[str, str] = ("hors_sol", "terrestre"),
 ) -> dict:
-    """Wordscores vs Latouromètre on the hold-out (pure, testable).
+    """Wordscores vs Attractor Compass on the hold-out (pure, testable).
 
     - Wordscores is graded only on this axis's two poles.
-    - The Latouromètre is graded on every non-null gold it has a prediction for
+    - The Attractor Compass is graded on every non-null gold it has a prediction for
       (all four poles).
     - ``div`` lists the on-axis texts where exactly one method is right (the
       complementary-failure cases — the scientific payload).
@@ -443,7 +442,7 @@ def score_corpus(
             axis_score_ci_high=ci[1],
         )
 
-    # Seeds + inversions live at the top level of corpus_latourometre/. The two
+    # Seeds + inversions live at the top level of corpus_attractor_compass/. The two
     # buckets are split by audit role (not sub_pole): the seed bucket is the
     # ``audit.use_for_seeds: true`` basin, the inversion bucket every
     # ``INVERSION-HOLD`` text. This is what lands Bruckner (sub_pole: null but
@@ -591,7 +590,7 @@ def _holdout_table(
     head = "| Text | Gold | Wordscores | Axis score | Hits |"
     sep = "|---|---|---|---|---|"
     if has_lat:
-        head = "| Text | Gold | Wordscores | Latouromètre | Axis score | Hits |"
+        head = "| Text | Gold | Wordscores | Attractor Compass | Axis score | Hits |"
         sep = "|---|---|---|---|---|---|"
     lines = [head, sep]
     for r in ho:
@@ -606,7 +605,7 @@ def _holdout_table(
 def _headtohead_section(
     holdout: List[ScoredText], latour: Optional[Dict[str, str]]
 ) -> str:
-    """Out-of-sample accuracy: Wordscores alone, or head-to-head vs Latouromètre."""
+    """Out-of-sample accuracy: Wordscores alone, or head-to-head vs Attractor Compass."""
     ws_ok, ws_tot = accuracy(
         holdout if isinstance(holdout, list) else list(holdout), "holdout"
     )
@@ -618,8 +617,8 @@ def _headtohead_section(
             f"{ws_ok}/{ws_tot} ({ws_pct}).** Unlike the in-sample seeds, the "
             f"hold-out texts never entered the lexicon — this is the real "
             f"generalization signal. Only HS/T golds are graded (Global/Local "
-            f"golds are off this 1-D axis). Pass `--latourometre-dir` to add the "
-            f"head-to-head against the full Latouromètre."
+            f"golds are off this 1-D axis). Pass `--attractor-compass-dir` to add the "
+            f"head-to-head against the full Attractor Compass."
         )
 
     h = headtohead(list(holdout), latour)
@@ -627,7 +626,7 @@ def _headtohead_section(
     div_lines = (
         "\n".join(
             f"- `{slug}` (gold **{g}**): Wordscores **{_fmt_pole(a)}** "
-            f"{'✓' if a == g else '✗'}, Latouromètre **{_fmt_pole(b)}** {'✓' if b == g else '✗'}"
+            f"{'✓' if a == g else '✗'}, Attractor Compass **{_fmt_pole(b)}** {'✓' if b == g else '✗'}"
             for slug, g, a, b in sorted(h["div"], key=lambda x: x[0])
         )
         or "- _(none — the two methods agree on every gradable HS/T text)_"
@@ -639,10 +638,10 @@ either method's output, so this is non-circular):
 | Method | Scope | Out-of-sample accuracy |
 |---|---|---|
 | **Wordscores** (lexical, 1-D HS↔T) | {h["ws_tot"]} HS/T golds | **{h["ws_ok"]}/{h["ws_tot"]} ({ws_pct})** |
-| **Latouromètre** (cosine + NLI, 4 poles) | {h["lat_tot"]} golds (all poles) | **{h["lat_ok"]}/{h["lat_tot"]} ({lat_pct})** |
+| **Attractor Compass** (cosine + NLI, 4 poles) | {h["lat_tot"]} golds (all poles) | **{h["lat_ok"]}/{h["lat_tot"]} ({lat_pct})** |
 
 The two are **not** ranked — they cover different problems (Wordscores cannot
-represent Global/Local; the Latouromètre does all four poles) and, crucially,
+represent Global/Local; the Attractor Compass does all four poles) and, crucially,
 **fail on different texts**. Where exactly one is right on the shared HS↔T
 sub-problem:
 
@@ -651,7 +650,7 @@ sub-problem:
 These divergences are the payload: a purely-lexical scaler is *more robust* than
 the NLI metric on texts whose vocabulary is unambiguously Hors-Sol (techno-
 imperial, transhumanist), where the NLI stance layer over-reasons; the metric in
-turn wins wherever Global/Local or stance-inversion matters. (Latouromètre
+turn wins wherever Global/Local or stance-inversion matters. (Attractor Compass
 predictions read from the run artifacts; no live scoring call.)"""
 
 
@@ -763,7 +762,7 @@ def build_report_generic(
         div_lines = (
             "\n".join(
                 f"- `{slug}` (gold **{_disp(g)}**): Wordscores **{_fmt_pole(a)}** "
-                f"{'✓' if a == g else '✗'}, Latouromètre **{_fmt_pole(b)}** {'✓' if b == g else '✗'}"
+                f"{'✓' if a == g else '✗'}, Attractor Compass **{_fmt_pole(b)}** {'✓' if b == g else '✗'}"
                 for slug, g, a, b in sorted(h["div"], key=lambda x: x[0])
             )
             or "- _(none on the shared on-axis golds)_"
@@ -772,7 +771,7 @@ def build_report_generic(
 | Method | Scope | Out-of-sample accuracy |
 |---|---|---|
 | **Wordscores** (lexical, {minus_d}↔{plus_d}) | {h["ws_tot"]} on-axis golds | **{h["ws_ok"]}/{h["ws_tot"]}** |
-| **Latouromètre** (cosine + NLI, 4 poles) | {h["lat_tot"]} golds (all poles) | **{h["lat_ok"]}/{h["lat_tot"]} ({lat_pct})** |
+| **Attractor Compass** (cosine + NLI, 4 poles) | {h["lat_tot"]} golds (all poles) | **{h["lat_ok"]}/{h["lat_tot"]} ({lat_pct})** |
 
 On-axis texts where exactly one method is right:
 
@@ -782,7 +781,7 @@ On-axis texts where exactly one method is right:
     return f"""# Wordscores — {minus_d} ↔ {plus_d} axis (data report)
 
 > Axis-neutral, numbers-only report. Method + interpretation: see the project
-> README and the Latouromètre write-up.
+> README and the Attractor Compass write-up.
 
 {_scoring_banner(scoring)}
 
@@ -847,7 +846,7 @@ def build_report(
     n_seed = sum(1 for r in rows if r.category == "seed")
     n_inv = sum(1 for r in rows if r.category == "inversion")
 
-    return f"""# Wordscores vs. the Latouromètre — Hors-Sol ↔ Terrestre comparison
+    return f"""# Wordscores vs. the Attractor Compass — Hors-Sol ↔ Terrestre comparison
 
 {_scoring_banner(scoring)}
 **Method.** Each text is scored as `axis_score = mean over in-lexicon lemmas of
@@ -889,7 +888,7 @@ the adversarial-quotation** one (Damasio speaks « Silicon Valley »/« GAFAM »
 demolish it — and even then only to a near-tie). It reads the words, not the
 argument.
 
-## 4. Contrast with the full Latouromètre (cosine + NLI)
+## 4. Contrast with the full Attractor Compass (cosine + NLI)
 
 The full metric (`{_PROD_DOC}`, seeds v4 + NLI stance blend, run_009)
 reaches **36/39 (0.923)**, bootstrap 95% CI **[0.846, 1.000]** on the full 4-pole
@@ -930,7 +929,7 @@ def compare(
     lexicon_path: Optional[Path] = None,
     tests_dir: Optional[Path] = None,
     oracle_path: Optional[Path] = None,
-    latourometre_dir: Optional[Path] = None,
+    attractor_compass_dir: Optional[Path] = None,
     scoring: str = "lbg",
 ) -> int:
     if axis not in SUPPORTED_AXES:
@@ -954,7 +953,7 @@ def compare(
     if not lexicon_path.exists():
         print(
             f"ERROR: lexicon not found at {lexicon_path}. Run "
-            f"`python -m latourometer.baselines.calibrate --axis {axis}` first.",
+            f"`python -m attractor_compass.baselines.calibrate --axis {axis}` first.",
             file=sys.stderr,
         )
         return 1
@@ -980,7 +979,11 @@ def compare(
     oracle = (
         score_oracle(lexicon, oracle_path) if axis == "hors-sol-terrestre" else None
     )
-    latour = load_latourometre_preds(latourometre_dir) if latourometre_dir else None
+    latour = (
+        load_attractor_compass_preds(attractor_compass_dir)
+        if attractor_compass_dir
+        else None
+    )
 
     in_ok, in_tot = accuracy(rows, "seed")
     oos_ok, oos_tot = accuracy(rows, "holdout")
@@ -1001,7 +1004,7 @@ def compare(
     if latour:
         h = headtohead([r for r in rows if r.category == "holdout"], latour)
         print(
-            f"  Latouromètre OOS:     {h['lat_ok']}/{h['lat_tot']} (4 poles, from run dir)"
+            f"  Attractor Compass OOS:     {h['lat_ok']}/{h['lat_tot']} (4 poles, from run dir)"
         )
     if oracle is not None:
         print(
@@ -1058,7 +1061,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         "--tests-dir",
         type=Path,
         default=None,
-        help="hold-out dir (default corpus_latourometre/tests)",
+        help="hold-out dir (default corpus_attractor_compass/tests)",
     )
     parser.add_argument(
         "--oracle-path",
@@ -1068,11 +1071,11 @@ def main(argv: Optional[List[str]] = None) -> int:
         "scored as a positive control, its prose is never written out",
     )
     parser.add_argument(
-        "--latourometre-dir",
+        "--attractor-compass-dir",
         type=Path,
         default=None,
-        help="optional dir of <slug>.latourometre.json (Latouromètre run artifacts); "
-        "when given, the report adds the out-of-sample Wordscores-vs-Latouromètre "
+        help="optional dir of <slug>.attractor_compass.json (Attractor Compass run artifacts); "
+        "when given, the report adds the out-of-sample Wordscores-vs-Attractor Compass "
         "head-to-head. No live scoring call.",
     )
     parser.add_argument(
@@ -1091,7 +1094,7 @@ def main(argv: Optional[List[str]] = None) -> int:
         lexicon_path=args.lexicon,
         tests_dir=args.tests_dir,
         oracle_path=args.oracle_path,
-        latourometre_dir=args.latourometre_dir,
+        attractor_compass_dir=args.attractor_compass_dir,
         scoring=args.scoring,
     )
 

@@ -15,7 +15,7 @@ chunks. A plain sum of cosines biases toward the theme with the highest
 baseline similarity rather than the winner per chunk. Softmax-per-chunk
 produces a winner-take-all signal that averages cleanly across the text.
 
-This module is the shared geometry backbone: ``LatouromètreMetric`` and
+This module is the shared geometry backbone: ``AttractorCompassMetric`` and
 ``LatourStanceMetric`` import ``_cosine`` / ``_softmax_aggregate`` / ``_chunk_doc``
 from here so the two metrics chunk and project text identically.
 """

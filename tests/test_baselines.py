@@ -19,7 +19,7 @@ def corpus_env(tmp_path, monkeypatch):
     pytest.importorskip("spacy")
     pytest.importorskip("pyarrow")
     pytest.importorskip("frontmatter")
-    # The baselines read CORPUS_BASE_PATH/corpus_latourometre and write under
+    # The baselines read CORPUS_BASE_PATH/corpus_attractor_compass and write under
     # CORPUS_BASE_PATH/axes — point reads at the fixture, writes at a tmp copy.
     import shutil
 
@@ -37,7 +37,7 @@ def _skip_if_no_model(func):
 
 
 def test_wordscores_calibrate_and_compare(corpus_env):
-    from latourometer.baselines import calibrate, compare
+    from attractor_compass.baselines import calibrate, compare
 
     rc = _skip_if_no_model(
         lambda: calibrate.calibrate(

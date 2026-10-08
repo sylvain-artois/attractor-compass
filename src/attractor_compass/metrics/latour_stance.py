@@ -1,7 +1,7 @@
 """Latour stance: zero-shot NLI scoring of each chunk against pro / contra
 hypotheses per latourian pole.
 
-The cosine-only Latouromètre cannot tell apart "this text endorses pole P"
+The cosine-only Attractor Compass cannot tell apart "this text endorses pole P"
 from "this text uses P's lexicon to attack P" — distributional similarity
 is blind to stance. Phase D adds an entailment-based scorer that measures,
 for each pole, *how well does the text entail this pro/contra claim?*
@@ -28,7 +28,7 @@ amplitude proportional to the hypothesis count, masking strong stance.
 of these stance claims strongly?" — which is what stance detection wants.
 ``mean`` is kept across chunks so text length normalises naturally.
 
-The output is consumed downstream by ``LatourometreMetric`` to blend with
+The output is consumed downstream by ``AttractorCompassMetric`` to blend with
 the cosine projection (``α·cosine + (1−α)·((stance+1)/2)``).
 
 Graceful by design: any failure path returns a zero-filled payload with
@@ -80,7 +80,7 @@ class LatourStanceMetric(AbstractMetric):
 
     def compute(self, ctx: AnalysisContext) -> Dict[str, Any]:
         rel = self.options.get(
-            "hypotheses_file", "config/latourometre-stance-hypotheses.yml"
+            "hypotheses_file", "config/attractor-compass-stance-hypotheses.yml"
         )
         hyp_path = ctx.project_root / rel
 

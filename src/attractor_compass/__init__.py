@@ -1,6 +1,6 @@
-"""Latouromètre — score a French political text on Bruno Latour's two axes.
+"""Attractor Compass — score a French political text on Bruno Latour's two axes.
 
-    >>> from latourometer import score
+    >>> from attractor_compass import score
     >>> result = score("Nous devons habiter la Terre et composer avec le vivant.")
     >>> result["dominant_pole"]
     'terrestre'

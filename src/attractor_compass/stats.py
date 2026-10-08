@@ -1,4 +1,4 @@
-"""Bootstrap confidence intervals for Latouromètre accuracy reporting.
+"""Bootstrap confidence intervals for Attractor Compass accuracy reporting.
 
 The calibration corpus (currently 39 texts) is treated as a *sample* of a
 hypothetical larger population of political texts. Resampling the per-text
@@ -27,7 +27,7 @@ def _as_correct_array(correct: Sequence[Any]) -> np.ndarray:
     """Coerce a per-text correctness sequence to a float {0,1} array.
 
     Accepts bools, ints, the literal strings ``"True"``/``"False"`` (as emitted
-    by ``calibrate_latourometre.py`` matrix rows), or anything truthy/falsy.
+    by calibration matrix rows), or anything truthy/falsy.
     """
     out = np.empty(len(correct), dtype=float)
     for i, c in enumerate(correct):

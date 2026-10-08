@@ -1,4 +1,4 @@
-"""Shared corpus loader for Latouromètre calibration scripts.
+"""Shared corpus loader for Attractor Compass calibration scripts.
 
 Two on-disk header formats are supported:
 
@@ -28,7 +28,7 @@ A file is parsed as frontmatter when its first (BOM-stripped) line is ``---``;
 otherwise the legacy parser runs and a single ``WARNING`` names the unmigrated
 file. The ``attracteur`` field uses extended labels (``local+``, ``global-``,
 etc.); ``fold_pole`` maps them to the four canonical pole keys used by
-``LatourometreChart`` and ``LatourometreMetric``.
+the polar chart and ``AttractorCompassMetric``.
 """
 
 from __future__ import annotations
@@ -58,7 +58,7 @@ _POLE_FOLD: Dict[str, str] = {
     "terrestre": "terrestre",
 }
 
-# Canonical display labels used by LatourometreChart.
+# Canonical display labels for the four poles.
 POLE_LABELS: Dict[str, str] = {
     "terrestre": "Terrestre",
     "global": "Global",
@@ -66,7 +66,7 @@ POLE_LABELS: Dict[str, str] = {
     "local": "Local",
 }
 
-# Hard-coded pole order required by LatourometreChart.render.
+# Canonical pole order (top, right, bottom, left of the polar chart).
 POLE_ORDER = ("terrestre", "global", "hors_sol", "local")
 
 

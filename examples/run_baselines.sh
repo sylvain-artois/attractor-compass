@@ -13,14 +13,14 @@ export CORPUS_BASE_PATH="${CORPUS_BASE_PATH:-$REPO/out/benchmark-corpus}"
 
 # Seed the working corpus from the committed fixture (read-only source).
 mkdir -p "$CORPUS_BASE_PATH"
-cp -r "$REPO/tests/fixtures/corpus/corpus_latourometre" "$CORPUS_BASE_PATH/"
+cp -r "$REPO/tests/fixtures/corpus/corpus_attractor_compass" "$CORPUS_BASE_PATH/"
 
 echo "== Wordscores: calibrate the Hors-Sol <-> Terrestre lexicon =="
-python -m latourometer.baselines.calibrate --axis hors-sol-terrestre --min-docs-per-pole 1 --bootstrap-n 0
-python -m latourometer.baselines.calibrate --axis local-global --min-docs-per-pole 1 --bootstrap-n 0
+python -m attractor_compass.baselines.calibrate --axis hors-sol-terrestre --min-docs-per-pole 1 --bootstrap-n 0
+python -m attractor_compass.baselines.calibrate --axis local-global --min-docs-per-pole 1 --bootstrap-n 0
 
 echo "== Wordscores: score texts + build the comparison report =="
-python -m latourometer.baselines.compare --axis hors-sol-terrestre
+python -m attractor_compass.baselines.compare --axis hors-sol-terrestre
 
 echo
 echo "Done. See:"

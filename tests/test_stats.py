@@ -1,10 +1,10 @@
-"""Tests for latourometer.stats — bootstrap confidence intervals."""
+"""Tests for attractor_compass.stats — bootstrap confidence intervals."""
 
 from __future__ import annotations
 
 import pytest
 
-from latourometer.stats import (
+from attractor_compass.stats import (
     bootstrap_accuracy_ci,
     format_ci,
     paired_bootstrap_diff_ci,
@@ -31,7 +31,7 @@ def test_bootstrap_accuracy_ci_19_of_21():
 
 
 def test_bootstrap_accuracy_ci_accepts_string_passed_flags():
-    # calibrate_latourometre.py emits row["passed"] as "True"/"False".
+    # The calibration matrix emits row["passed"] as "True"/"False".
     ci = bootstrap_accuracy_ci(["True", "True", "False", "True"])
     assert ci["point"] == pytest.approx(0.75)
     assert ci["n"] == 4

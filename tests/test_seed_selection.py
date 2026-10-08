@@ -21,12 +21,12 @@ from pathlib import Path
 
 import pytest
 
-from latourometer.baselines._corpus_loader import (
+from attractor_compass.baselines._corpus_loader import (
     ROLE_INVERSION_HOLD,
     role_of,
     seed_pool,
 )
-from latourometer.baselines.calibrate import load_axis_corpus
+from attractor_compass.baselines.calibrate import load_axis_corpus
 
 _BRUCKNER = "inversion_hors-sol_001_pascal-bruckner_greta-thunberg-ou-la"
 
@@ -74,7 +74,7 @@ def test_fixture_seed_pool_excludes_inversion_hold(mini_corpus):
 
 
 def test_fixture_bruckner_is_an_inversion_hold(mini_corpus):
-    from latourometer.baselines._corpus_loader import load_corpus
+    from attractor_compass.baselines._corpus_loader import load_corpus
 
     by_slug = {e["slug"]: e for e in load_corpus(mini_corpus)}
     assert role_of(by_slug[_BRUCKNER]) == ROLE_INVERSION_HOLD
@@ -85,7 +85,7 @@ def test_fixture_bruckner_is_an_inversion_hold(mini_corpus):
 def test_fixture_load_axis_corpus_routes_bruckner_to_excluded(mini_corpus, monkeypatch):
     # Point load_axis_corpus at the fixture by patching corpus_dir.
     monkeypatch.setattr(
-        "latourometer.baselines.calibrate.corpus_dir", lambda: mini_corpus
+        "attractor_compass.baselines.calibrate.corpus_dir", lambda: mini_corpus
     )
     kept, excluded = load_axis_corpus("hors-sol-terrestre")
     kept_slugs = {e["slug"] for e in kept}

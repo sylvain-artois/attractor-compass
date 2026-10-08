@@ -1,4 +1,4 @@
-"""``score(text)`` — the standalone Latouromètre entrypoint.
+"""``score(text)`` — the standalone Attractor Compass entrypoint.
 
 Places a French political text on Bruno Latour's two attractor axes
 (*Où atterrir?*, 2017)::
@@ -13,7 +13,7 @@ It runs the full scoring in-process, with no server runtime behind it: segment
 the text, run the NLI stance metric, then the cosine SemAxis projection blended
 with that stance (additive-γ, γ=1.0 — the calibrated default).
 
-The return value is the ``latourometre`` metric block:
+The return value is the ``attractor_compass`` metric block:
 
     {
       "scores":        {pole: blended_score},   # the four-pole result
@@ -32,15 +32,15 @@ from __future__ import annotations
 from typing import Any, Dict, Optional
 
 from .base import AnalysisContext, _segment_answer
+from .metrics.attractor_compass import AttractorCompassMetric
 from .metrics.latour_stance import LatourStanceMetric
-from .metrics.latourometre import LatourometreMetric
 from .runtime import get_embedder, get_nli_pipeline, get_spacy_nlp, project_root
 
 # Calibrated defaults: seeds v4 + γ=1.0 blend, τ=0.03 per-chunk softmax (the
 # "sharper winner-take-all" calibration; the metric's own fallback default is
 # 0.05).
-_SEEDS_FILE = "config/latourometre-seeds.yml"
-_HYPOTHESES_FILE = "config/latourometre-stance-hypotheses.yml"
+_SEEDS_FILE = "config/attractor-compass-seeds.yml"
+_HYPOTHESES_FILE = "config/attractor-compass-stance-hypotheses.yml"
 _DEFAULT_GAMMA = 1.0
 _DEFAULT_SOFTMAX_TAU = 0.03
 
@@ -64,7 +64,7 @@ def score(
             default; ``None`` falls back to the metric's own 0.05).
 
     Returns:
-        A dict holding the ``latourometre`` metric block, plus a convenience
+        A dict holding the ``attractor_compass`` metric block, plus a convenience
         ``dominant_pole`` key (the argmax of ``scores``).
     """
     nlp = get_spacy_nlp()
@@ -91,7 +91,7 @@ def score(
     if softmax_tau is not None:
         latour_opts["softmax_tau"] = softmax_tau
 
-    result = LatourometreMetric(latour_opts).compute(ctx)
+    result = AttractorCompassMetric(latour_opts).compute(ctx)
 
     scores = result.get("scores") or {}
     if scores:
