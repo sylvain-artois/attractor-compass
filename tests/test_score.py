@@ -67,4 +67,6 @@ def test_golden_regression():
         pytest.skip(f"minted golden at {GOLDEN}; re-run to assert against it")
     expected = json.loads(GOLDEN.read_text(encoding="utf-8"))
     for pole, exp in expected.items():
-        assert result["scores"][pole] == pytest.approx(exp, abs=1e-6), pole
+        # 1e-5: CI runners drift ~2.5e-7 (x86 and arm64), local machines up to
+        # ~1e-6; any calibration change (seeds, γ, τ) moves scores by >1e-3.
+        assert result["scores"][pole] == pytest.approx(exp, abs=1e-5), pole
