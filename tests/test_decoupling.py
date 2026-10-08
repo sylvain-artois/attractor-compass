@@ -2,7 +2,7 @@
 
 Scoring one text must never pull in a server runtime, so this test walks every
 shipped ``.py`` file and fails if a database / cache / vector-store client
-appears, and it asserts that merely importing ``latourometer`` does not drag in a
+appears, and it asserts that merely importing ``attractor_compass`` does not drag in a
 heavy ML runtime.
 """
 
@@ -10,9 +10,9 @@ from __future__ import annotations
 
 import pathlib
 
-import latourometer
+import attractor_compass
 
-PKG_DIR = pathlib.Path(latourometer.__file__).resolve().parent
+PKG_DIR = pathlib.Path(attractor_compass.__file__).resolve().parent
 
 # Substrings that would betray a server-runtime dependency creeping back in.
 FORBIDDEN = [
@@ -42,7 +42,7 @@ def test_import_is_light():
     """Importing the package must not eagerly load torch / transformers.
 
     The heavy models load lazily inside ``score()`` (and the runtime loaders),
-    so a bare ``import latourometer`` stays cheap and dependency-light.
+    so a bare ``import attractor_compass`` stays cheap and dependency-light.
     """
     import sys
 
@@ -52,11 +52,11 @@ def test_import_is_light():
 
 def _torch_came_from_elsewhere() -> bool:
     # If torch is already loaded by the test session for another reason, we only
-    # care that *latourometer's import* did not require it; that is structurally
+    # care that *attractor_compass's import* did not require it; that is structurally
     # guaranteed by the lazy `import torch` inside runtime.py functions.
     return True
 
 
 def test_public_api():
-    assert callable(latourometer.score)
-    assert isinstance(latourometer.__version__, str)
+    assert callable(attractor_compass.score)
+    assert isinstance(attractor_compass.__version__, str)

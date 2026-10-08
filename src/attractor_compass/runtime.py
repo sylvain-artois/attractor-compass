@@ -1,6 +1,6 @@
 """Lazy singletons for the heavy NLP dependencies (spaCy + embedder + NLI).
 
-French-only runtime. It loads the three models the Latouromètre was calibrated
+French-only runtime. It loads the three models the Attractor Compass was calibrated
 against, so scores stay reproducible:
 
 - embedder : ``dangvantuan/sentence-camembert-large`` (frozen — no swap)
@@ -11,7 +11,7 @@ An STS-oriented French embedder keeps the cosine spread wide enough for the
 SemAxis projection; multilingual retrieval embedders (E5 / BGE) collapse cosines
 into a narrow band and kill the discriminance the metric relies on.
 
-The two ``LATOUROMETER_*_DEVICE`` env gates default to CPU (safe everywhere) and
+The two ``ATTRACTOR_COMPASS_*_DEVICE`` env gates default to CPU (safe everywhere) and
 opt a model onto CUDA when a GPU is free, which is the wall-time bottleneck for
 batch calibration.
 """
@@ -33,7 +33,7 @@ NLI_MODEL = "cmarkea/distilcamembert-base-nli"
 
 def project_root() -> Path:
     """Package root — resolves the packaged ``config/*.yml`` seed/hypothesis files."""
-    # src/latourometer/runtime.py -> src/latourometer/
+    # src/attractor_compass/runtime.py -> src/attractor_compass/
     return Path(__file__).resolve().parent
 
 
@@ -54,13 +54,13 @@ def get_spacy_nlp() -> Any:
 def _resolve_embedder_device() -> str:
     """Device string for the sentence embedder. Default ``"cpu"``.
 
-    ``LATOUROMETER_EMBEDDER_DEVICE`` opts the embedder onto a CUDA device (e.g.
+    ``ATTRACTOR_COMPASS_EMBEDDER_DEVICE`` opts the embedder onto a CUDA device (e.g.
     ``"0"`` or ``"cuda:0"``) for offline batch calibration, where the GPU is free
     and the CPU embedder is the wall-time bottleneck. Falls back to CPU with a
     warning if CUDA is requested but absent, so a stale env var never crashes a
     run.
     """
-    raw = os.environ.get("LATOUROMETER_EMBEDDER_DEVICE")
+    raw = os.environ.get("ATTRACTOR_COMPASS_EMBEDDER_DEVICE")
     if raw is None or raw.strip() in ("", "-1", "cpu"):
         return "cpu"
     dev = raw.strip()
@@ -71,13 +71,15 @@ def _resolve_embedder_device() -> str:
 
         if not torch.cuda.is_available():
             logger.warning(
-                "LATOUROMETER_EMBEDDER_DEVICE=%r requested but CUDA unavailable — using CPU",
+                "ATTRACTOR_COMPASS_EMBEDDER_DEVICE=%r requested but CUDA unavailable — using CPU",
                 raw,
             )
             return "cpu"
     except Exception:  # noqa: BLE001 — torch missing/broken → safe CPU fallback
         return "cpu"
-    logger.info("LATOUROMETER_EMBEDDER_DEVICE override active: embedder on %s", dev)
+    logger.info(
+        "ATTRACTOR_COMPASS_EMBEDDER_DEVICE override active: embedder on %s", dev
+    )
     return dev
 
 
@@ -102,18 +104,18 @@ def get_embedder() -> Any:
 def _resolve_nli_device() -> int:
     """Device for the NLI pipeline. Default ``-1`` (CPU).
 
-    ``LATOUROMETER_NLI_DEVICE`` opts the zero-shot stance head onto a CUDA device
+    ``ATTRACTOR_COMPASS_NLI_DEVICE`` opts the zero-shot stance head onto a CUDA device
     (e.g. ``"0"``) where NLI inference dominates CPU wall time. Falls back to CPU
     with a warning if CUDA is requested but absent.
     """
-    raw = os.environ.get("LATOUROMETER_NLI_DEVICE")
+    raw = os.environ.get("ATTRACTOR_COMPASS_NLI_DEVICE")
     if raw is None or raw.strip() in ("", "-1"):
         return -1
     try:
         dev = int(raw)
     except ValueError:
         logger.warning(
-            "LATOUROMETER_NLI_DEVICE=%r is not an int — falling back to CPU", raw
+            "ATTRACTOR_COMPASS_NLI_DEVICE=%r is not an int — falling back to CPU", raw
         )
         return -1
     if dev < 0:
@@ -123,13 +125,13 @@ def _resolve_nli_device() -> int:
 
         if not torch.cuda.is_available():
             logger.warning(
-                "LATOUROMETER_NLI_DEVICE=%d requested but CUDA unavailable — using CPU",
+                "ATTRACTOR_COMPASS_NLI_DEVICE=%d requested but CUDA unavailable — using CPU",
                 dev,
             )
             return -1
     except Exception:  # noqa: BLE001 — torch missing/broken → safe CPU fallback
         return -1
-    logger.info("LATOUROMETER_NLI_DEVICE override active: NLI on cuda:%d", dev)
+    logger.info("ATTRACTOR_COMPASS_NLI_DEVICE override active: NLI on cuda:%d", dev)
     return dev
 
 

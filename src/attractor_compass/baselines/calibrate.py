@@ -1,7 +1,7 @@
 """Wordscores calibration of Latour's Hors-Sol <-> Terrestre lexicon.
 
 Runs Wordscores (Laver, Benoit & Garry 2003) over the finalized 39-text
-Latouromètre calibration corpus (``corpus_latourometre/``) and writes a
+Attractor Compass calibration corpus (``corpus_attractor_compass/``) and writes a
 ``word -> score`` lexicon on Latour's politically-active axis:
 
     S(w) = Σ_pole P(pole | w) · ref_score(pole)
@@ -13,11 +13,11 @@ this module only counts and scores.
 
 Usage:
 
-    python -m latourometer.baselines.calibrate --axis hors-sol-terrestre \\
+    python -m attractor_compass.baselines.calibrate --axis hors-sol-terrestre \\
         [--dry-run] [--min-docs-per-pole 5] [--bootstrap-n 500]
 
 Point ``CORPUS_BASE_PATH`` at a corpus checkout (it expects a
-``corpus_latourometre/`` subdir). Outputs (under CORPUS_BASE_PATH):
+``corpus_attractor_compass/`` subdir). Outputs (under CORPUS_BASE_PATH):
 
     axes/hors-sol-terrestre/lexicon.csv      -- canonical, human-readable
     axes/hors-sol-terrestre/lexicon.parquet  -- for the Hugging Face viewer
@@ -57,7 +57,7 @@ from ._corpus_loader import (
 )
 from .schema import LexiconRow
 
-logger = logging.getLogger("latourometer.baselines.calibrate")
+logger = logging.getLogger("attractor_compass.baselines.calibrate")
 
 # Supported axes -> the ordered (minus_pole, plus_pole) keys that feed the
 # calibration. Two of Latour's perpendicular vectors are calibrated independently:
@@ -118,7 +118,7 @@ def corpus_base() -> Path:
 
 
 def corpus_dir() -> Path:
-    return corpus_base() / "corpus_latourometre"
+    return corpus_base() / "corpus_attractor_compass"
 
 
 def output_dir(axis: str) -> Path:

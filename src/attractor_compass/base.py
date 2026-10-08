@@ -1,4 +1,4 @@
-"""Minimal, dependency-free analysis primitives for the Latouromètre.
+"""Minimal, dependency-free analysis primitives for the Attractor Compass.
 
 Scoring one text needs only two small primitives, and this module defines both
 with no server runtime, database client, or orchestrator behind them:
@@ -8,7 +8,7 @@ with no server runtime, database client, or orchestrator behind them:
 * :class:`AnalysisContext` — the per-run bag the metrics read: the segmented
   spaCy docs, lazy ``embedder`` / ``nli`` loaders, the source language, a
   ``project_root`` to resolve the packaged YAML config, and ``metrics_so_far``
-  so the Latouromètre can blend the stance metric that ran before it.
+  so the Attractor Compass can blend the stance metric that ran before it.
 
 Keeping this layer free of Redis, Postgres, and any analyzer registry is what
 makes the package a self-contained library; ``tests/test_decoupling.py`` guards
@@ -35,8 +35,8 @@ class AnalysisContext:
     ``nlp_doc_per_answer`` is the list of spaCy docs the metrics chunk and
     embed. ``embedder`` / ``nli`` are zero-arg callables so a metric that does
     not need a model pays no load cost. ``project_root`` resolves the packaged
-    config (``config/latourometre-seeds.yml`` …). ``metrics_so_far`` lets a
-    later metric read an earlier one's output (the Latouromètre blends the
+    config (``config/attractor-compass-seeds.yml`` …). ``metrics_so_far`` lets a
+    later metric read an earlier one's output (the Attractor Compass blends the
     stance scores produced by ``LatourStanceMetric``).
     """
 

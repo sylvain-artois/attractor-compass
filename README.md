@@ -1,6 +1,6 @@
-# Latouromètre
+# Attractor Compass
 
-[![CI](https://github.com/sylvain-artois/latourometer/actions/workflows/ci.yml/badge.svg)](https://github.com/sylvain-artois/latourometer/actions/workflows/ci.yml)
+[![CI](https://github.com/sylvain-artois/attractor-compass/actions/workflows/ci.yml/badge.svg)](https://github.com/sylvain-artois/attractor-compass/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
@@ -43,21 +43,23 @@ cached afterwards:
 ## Use
 
 ```python
-from latourometer import score
+from attractor_compass import score
 
 result = score("Nous devons habiter la Terre et composer avec le vivant.")
-print(result["dominant_pole"])   # 'terrestre'
-print(result["scores"])          # {'terrestre': 0.79, 'global': 0.15, 'hors_sol': 0.06, 'local': 0.0}
+print(result["dominant_pole"])  # 'terrestre'
+print(
+    result["scores"]
+)  # {'terrestre': 0.79, 'global': 0.15, 'hors_sol': 0.06, 'local': 0.0}
 ```
 
 Or from the command line:
 
 ```bash
-latourometer "Nous croyons en la croissance technologique illimitée."
-latourometer --file speech.txt --json
+attractor-compass "Nous croyons en la croissance technologique illimitée."
+attractor-compass --file speech.txt --json
 ```
 
-`score()` returns the `latourometre` block: the four-pole blended `scores`, the
+`score()` returns the `attractor_compass` block: the four-pole blended `scores`, the
 pre-blend `cosine_scores`, the NLI `stance_scores` (in `[-1, +1]`), and a
 convenience `dominant_pole`. Pass `use_stance=False` for the pure cosine
 projection (no NLI load), or `gamma=` to tune the additive stance blend (γ = 1.0
@@ -72,7 +74,7 @@ and the softmax temperature τ = 0.03 are the calibrated defaults).
 | **Additive-γ blend** | `blended[P] = max(0, cosine[P] + γ·stance[P])`, renormalised. Neutral stance passes the cosine through; a strong contra stance suppresses a pole. |
 
 The seed phrases and stance hypotheses live in
-[`src/latourometer/config/`](src/latourometer/config/), with the calibration
+[`src/attractor_compass/config/`](src/attractor_compass/config/), with the calibration
 (seeds v4, γ = 1.0, τ = 0.03) baked in as the defaults.
 
 ## Baselines & reproducible benchmark
@@ -88,11 +90,33 @@ python -m spacy download fr_core_news_lg
 bash examples/run_baselines.sh
 ```
 
-The full labelled calibration corpus is published, non-consumptively, as the
-Hugging Face dataset
-[`DyePop/latourometer-corpus`](https://huggingface.co/datasets/DyePop/latourometer-corpus);
-point `CORPUS_BASE_PATH` at a checkout of it to reproduce the headline accuracy
-numbers instead of the fixture's toy table.
+## Calibration corpus
+
+The labelled calibration corpus is published as the Hugging Face dataset
+[`afk-live/attractor-compass-corpus`](https://huggingface.co/datasets/afk-live/attractor-compass-corpus).
+It is **non-consumptive**: each record carries the gold pole annotation, the
+audit role (SEED / INVERSION-HOLD / TEST / SANITY), provenance and derived
+features (doc-level embedding, shuffled lemma bag-of-words, NLI stance vector).
+Full prose ships only for openly licensed texts.
+
+```python
+from datasets import load_dataset
+
+ds = load_dataset("afk-live/attractor-compass-corpus")
+ds["train"], ds["test"]
+```
+
+The baseline CLIs above read a markdown corpus laid out like
+[`tests/fixtures/corpus/`](tests/fixtures/corpus/) (`CORPUS_BASE_PATH`
+containing a `corpus_attractor_compass/` directory, hold-out under `tests/`).
+
+## In use
+
+The Attractor Compass is one of the metrics behind
+[*Le poids des mots*](https://afk.live/fr/le-poids-des-mots/) on afk.live, a
+series of analyses of French political speech. Its calibration and limits are
+documented in the
+[methodology page](https://afk.live/fr/le-poids-des-mots/methodologie/).
 
 ## Tests
 
@@ -103,7 +127,7 @@ pytest
 
 `tests/test_decoupling.py` runs without any model and asserts the package stays
 a pure library — no server or database client creeps in, and a bare `import
-latourometer` never eagerly loads torch. The functional, golden and benchmark
+attractor_compass` never eagerly loads torch. The functional, golden and benchmark
 tests skip themselves when the models or the FR spaCy pipeline are not installed.
 
 ## Contributing

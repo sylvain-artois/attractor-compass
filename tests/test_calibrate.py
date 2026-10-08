@@ -6,7 +6,7 @@ needed, so they run anywhere ``pyarrow`` + ``pydantic`` are present.
 
 from collections import Counter
 
-from latourometer.baselines.calibrate import (
+from attractor_compass.baselines.calibrate import (
     AXIS_REF_SCORE,
     SUPPORTED_AXES,
     bootstrap_cis,

@@ -1,4 +1,4 @@
-# Contributing to Latouromètre
+# Contributing to Attractor Compass
 
 Thanks for your interest! This is a small, focused research package — a
 self-contained library that scores a French political text on Bruno Latour's
@@ -10,7 +10,7 @@ new baselines, calibration improvements.
 - Be civil and constructive. Assume good faith.
 - Open an issue before a large change so we can agree on the direction.
 - Keep the package **dependency-light and decoupled**: importing
-  `latourometer` must never drag in Redis, Postgres, or a pipeline runtime —
+  `attractor_compass` must never drag in Redis, Postgres, or a pipeline runtime —
   this is asserted by `tests/test_decoupling.py` and is a hard project
   invariant.
 

@@ -4,13 +4,13 @@ These exercise the pure scoring + grading math only -- no spaCy model and no
 corpus are needed, so they run in the bare test session.
 """
 
-from latourometer.baselines.compare import (
+from attractor_compass.baselines.compare import (
     ScoredText,
     _inversion_table,
     accuracy,
     axis_score,
     headtohead,
-    load_latourometre_preds,
+    load_attractor_compass_preds,
     load_lexicon,
     predict_pole,
 )
@@ -136,11 +136,11 @@ def test_accuracy_separates_in_sample_seeds_from_out_of_sample_holdout():
 
 def test_headtohead_grades_each_method_on_its_own_scope():
     holdout = [
-        # gold HS, Wordscores right (neg), Latouromètre wrong (global) -> divergence
+        # gold HS, Wordscores right (neg), Attractor Compass wrong (global) -> divergence
         ScoredText("a", "holdout", "hors_sol", True, -0.5, 10, 50),
         # gold T, both right
         ScoredText("b", "holdout", "terrestre", True, 0.5, 10, 50),
-        # gold global (off WS axis), Latouromètre right
+        # gold global (off WS axis), Attractor Compass right
         ScoredText("c", "holdout", "global", False, -0.1, 10, 50),
     ]
     latour = {"a": "global", "b": "terrestre", "c": "global"}
@@ -151,15 +151,15 @@ def test_headtohead_grades_each_method_on_its_own_scope():
     assert [d[0] for d in h["div"]] == ["a"]  # only 'a': WS right, LAT wrong
 
 
-def test_load_latourometre_preds_reads_predicted_pole(tmp_path):
-    (tmp_path / "foo.latourometre.json").write_text(
+def test_load_attractor_compass_preds_reads_predicted_pole(tmp_path):
+    (tmp_path / "foo.attractor_compass.json").write_text(
         '{"slug": "foo", "predicted_pole": "terrestre", "scores": {}}', encoding="utf-8"
     )
-    (tmp_path / "bar.latourometre.json").write_text(
+    (tmp_path / "bar.attractor_compass.json").write_text(
         '{"slug": "bar", "predicted_pole": null}',
         encoding="utf-8",  # null pred -> skipped
     )
-    preds = load_latourometre_preds(tmp_path)
+    preds = load_attractor_compass_preds(tmp_path)
     assert preds == {"foo": "terrestre"}
 
 

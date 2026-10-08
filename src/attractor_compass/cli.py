@@ -1,8 +1,8 @@
-"""``latourometer`` command-line entrypoint: score text on Latour's four poles.
+"""``attractor-compass`` command-line entrypoint: score text on Latour's four poles.
 
-latourometer "Nous croyons en la croissance technologique illimitée."
-latourometer --file speech.txt --json
-cat speech.txt | latourometer
+attractor-compass "Nous croyons en la croissance technologique illimitée."
+attractor-compass --file speech.txt --json
+cat speech.txt | attractor-compass
 """
 
 from __future__ import annotations
@@ -17,7 +17,7 @@ from .score import score
 
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(
-        prog="latourometer",
+        prog="attractor-compass",
         description="Score a French political text on Bruno Latour's four attractors.",
     )
     parser.add_argument(

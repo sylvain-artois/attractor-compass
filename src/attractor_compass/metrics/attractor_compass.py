@@ -1,4 +1,4 @@
-"""Latouromètre: semantic axis projection against Latour's four attractors.
+"""Attractor Compass: semantic axis projection against Latour's four attractors.
 
 Operationalises the geometry of Bruno Latour, *Où atterrir?* (2017) — four
 attractors arranged on two perpendicular axes:
@@ -114,13 +114,13 @@ def _blend_gamma(
     return {key: v / total for key, v in raw.items()}
 
 
-class LatourometreMetric(AbstractMetric):
-    id = "latourometre"
+class AttractorCompassMetric(AbstractMetric):
+    id = "attractor_compass"
 
     def compute(self, ctx: AnalysisContext) -> Dict[str, Any]:
         import numpy as np  # type: ignore
 
-        rel = self.options.get("seeds_file", "config/latourometre-seeds.yml")
+        rel = self.options.get("seeds_file", "config/attractor-compass-seeds.yml")
         seeds_path = ctx.project_root / rel
         seeds_cfg = _load_seeds(seeds_path)
         poles = seeds_cfg.get("poles", {})

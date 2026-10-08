@@ -6,7 +6,7 @@ The first call downloads / loads the CamemBERT embedder and the distilCamemBERT
 NLI head (a few hundred MB, cached afterwards), so it takes a minute cold.
 """
 
-from latourometer import score
+from attractor_compass import score
 
 TEXTS = {
     "Terrestre": "Nous devons habiter la Terre, défendre le vivant et la biodiversité de la zone critique.",

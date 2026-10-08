@@ -30,7 +30,7 @@ PROBE = (
 def _score_or_skip(**kwargs):
     pytest.importorskip("sentence_transformers")
     pytest.importorskip("spacy")
-    from latourometer import score
+    from attractor_compass import score
 
     try:
         return score(PROBE, **kwargs)

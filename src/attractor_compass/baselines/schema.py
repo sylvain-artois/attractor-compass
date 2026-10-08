@@ -14,7 +14,7 @@ from pydantic import BaseModel
 class LexiconRow(BaseModel):
     """A single Wordscores lexicon entry (one row of lexicon.csv / lexicon.parquet).
 
-    Produced by ``latourometer.baselines.calibrate`` on one of Latour's polar
+    Produced by ``attractor_compass.baselines.calibrate`` on one of Latour's polar
     axes (Hors-Sol <-> Terrestre, Local <-> Global). Contains only lemmas + POS +
     statistics -- no source prose -- so the published artifact is a clean
     non-consumptive derivative.

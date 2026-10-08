@@ -13,7 +13,7 @@ are needed.
 
 import math
 
-from latourometer.baselines.compare import (
+from attractor_compass.baselines.compare import (
     _LOWE_ALPHA,
     ScoredText,
     axis_score,
