@@ -136,6 +136,12 @@ Bug reports, baselines, and calibration improvements are welcome — see
 [CONTRIBUTING.md](CONTRIBUTING.md) for dev setup, the layered test suite, and
 the lint/format workflow.
 
+## Citing
+
+Citation metadata live in [CITATION.cff](CITATION.cff) — GitHub's "Cite this
+repository" button exports them as APA or BibTeX. Each release is archived on
+Zenodo with its own DOI; cite the DOI of the version you used.
+
 ## License
 
 MIT — see [LICENSE](LICENSE). The synthetic fixture corpus under

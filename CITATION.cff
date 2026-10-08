@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it using the metadata below."
+type: software
+title: "Attractor Compass"
+abstract: >-
+  Scores a French political text on the two attractor axes of Bruno Latour's
+  Où atterrir ? (2017) — Local↔Global and Hors-Sol↔Terrestre — with a cosine
+  SemAxis projection blended with zero-shot NLI stance. Ships the Wordscores
+  lexical baseline and a reproducible benchmark.
+authors:
+  - family-names: Artois
+    given-names: Sylvain
+    orcid: "https://orcid.org/0009-0004-1103-1256"
+version: 0.1.0
+license: MIT
+repository-code: "https://github.com/sylvain-artois/attractor-compass"
+url: "https://github.com/sylvain-artois/attractor-compass"
+keywords:
+  - latour
+  - political-science
+  - text-scaling
+  - semaxis
+  - nli
+  - french-nlp
+references:
+  - type: data
+    title: "Attractor Compass calibration corpus (non-consumptive)"
+    authors:
+      - family-names: Artois
+        given-names: Sylvain
+        orcid: "https://orcid.org/0009-0004-1103-1256"
+    url: "https://huggingface.co/datasets/afk-live/attractor-compass-corpus"
+  - type: book
+    title: "Où atterrir ? Comment s'orienter en politique"
+    authors:
+      - family-names: Latour
+        given-names: Bruno
+    year: 2017
+    publisher:
+      name: "La Découverte"
