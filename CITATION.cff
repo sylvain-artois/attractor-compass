@@ -12,6 +12,15 @@ authors:
     given-names: Sylvain
     orcid: "https://orcid.org/0009-0004-1103-1256"
 version: 0.1.0
+date-released: "2026-10-08"
+doi: 10.5281/zenodo.23246692
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23246692
+    description: Concept DOI, resolves to the latest release.
+  - type: doi
+    value: 10.5281/zenodo.23246693
+    description: Version DOI of v0.1.0.
 license: MIT
 repository-code: "https://github.com/sylvain-artois/attractor-compass"
 url: "https://github.com/sylvain-artois/attractor-compass"

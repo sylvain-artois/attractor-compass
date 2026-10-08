@@ -3,6 +3,7 @@
 [![CI](https://github.com/sylvain-artois/attractor-compass/actions/workflows/ci.yml/badge.svg)](https://github.com/sylvain-artois/attractor-compass/actions/workflows/ci.yml)
 [![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23246692.svg)](https://doi.org/10.5281/zenodo.23246692)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 Score a French political text on **Bruno Latour's two attractor axes** from
@@ -140,7 +141,10 @@ the lint/format workflow.
 
 Citation metadata live in [CITATION.cff](CITATION.cff) — GitHub's "Cite this
 repository" button exports them as APA or BibTeX. Each release is archived on
-Zenodo with its own DOI; cite the DOI of the version you used.
+Zenodo with its own DOI; cite the DOI of the version you used — v0.1.0 is
+[10.5281/zenodo.23246693](https://doi.org/10.5281/zenodo.23246693). The concept
+DOI [10.5281/zenodo.23246692](https://doi.org/10.5281/zenodo.23246692) always
+resolves to the latest release.
 
 ## License
 
